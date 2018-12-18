@@ -13,15 +13,14 @@
   export default {
     name: 'app',
     data() {
-      return {
-      }
+      return {}
     },
     components: {
       vueLazyWaterfall
     },
     methods: {
-      backToTopHandler(){
-        window.scrollTo(0,0)
+      backToTopHandler() {
+        window.scrollTo(0, 0)
       }
     }
   }
@@ -29,6 +28,7 @@
 
 <style lang="scss">
   @import "static/css/reset.css";
+
   .back-top {
     position: fixed;
     right: 100px;
@@ -38,5 +38,40 @@
     color: white;
     padding: 20px 10px;
     cursor: pointer;
+  }
+
+  .end-tip {
+    text-align: center;
+    font-size: 30px;
+    color: #999;
+  }
+
+  .loading-spinner {
+    height: 120px;
+    &:before {
+      content: ' ';
+      position: absolute;
+      z-index: 1000;
+      display: block;
+      width: 100px;
+      height: 100px;
+      background: url("./static/images/loading-spinner.png") no-repeat;
+      animation: rotateAnim 1.5s linear infinite;
+      background-size: 100%;
+      margin-left: 49%;
+      margin-top: 20px;
+    }
+  }
+
+  @keyframes rotateAnim {
+    0% {
+      transform: rotate(0)
+    }
+    50% {
+      transform: rotate(-180deg)
+    }
+    100% {
+      transform: rotate(-360deg)
+    }
   }
 </style>

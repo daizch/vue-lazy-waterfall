@@ -274,6 +274,7 @@ export default {
 ### slots
 | name | default | slot-scope | description|
 | --- | --- | --- | --- |
+| loading | - | - | loading content placeholder to show when the waterfall is not finished |
 | endToBottom| - | - | it will show up when the waterfall was scrolled to end
 | - | - | item | each item's content to display
 

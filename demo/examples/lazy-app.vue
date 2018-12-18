@@ -11,8 +11,9 @@
           <p>{{item.info}}</p>
         </div>
       </template>
+      <div class="loading-spinner" slot="loading"></div>
       <template slot="endToBottom">
-        <div>it is end...</div>
+        <div class="end-tip">it is end...</div>
       </template>
     </vueLazyWaterfall>
   </div>
@@ -65,10 +66,11 @@
             self.loadData()
           },
           loaded() {
-            setTimeout(() => {
+            self.$refs.waterfall.$on('preloaded', () => {
+              console.log('load next')
               $loading.dataset.loaded = false
               observer.observe($loading)
-            }, 1e3)
+            })
           },
           rootMargin: '500px',
           threshold: 1

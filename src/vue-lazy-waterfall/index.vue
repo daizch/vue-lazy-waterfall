@@ -12,8 +12,11 @@
           @click="clickItemHandler(item, index, $event)">
         <slot :item="item"></slot>
       </li>
-      <li class="loading-placeholder" ref="loadRef"></li>
+      <li class="loading-placeholder" ref="loadRef" v-show="isFinished===false">
+        <slot name="loading"></slot>
+      </li>
     </ul>
+
     <div class="vue-lazy-waterfall-end" v-show="isFinished">
       <slot name="endToBottom">{{isFinished}}</slot>
     </div>
@@ -220,10 +223,9 @@
       position: relative;
     }
     .loading-placeholder {
-      height: 1px;
+      min-height: 1px;
       width: 100%;
       background-color: transparent;
-      visibility: hidden;
     }
     .vue-lazy-waterfall-item {
       position: absolute;

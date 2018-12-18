@@ -13,7 +13,7 @@
         <img :src="item.src" alt="">
         {{item.textContent}}
       </div>
-
+      <div class="loading-spinner" slot="loading"></div>
       <div slot="endToBottom" class="end-tip">end...</div>
     </vueLazyWaterfall>
 
@@ -42,7 +42,7 @@
         axios.get('./static/mock/data.json?group=' + this.group)
           .then(res => {
             this.group++
-            if (this.group === 33) {
+            if (this.group > 20) {
               this.$refs.waterfall.end()
               return
             }
@@ -56,15 +56,6 @@
       },
       imageLoad({$event}) {
         // console.log($event)
-      },
-      changeImgArr() {
-        axios.get('./static/mock/data-change.json')
-          .then(res => {
-            this.items = res.data
-          })
-      },
-      backToTopHandler(){
-        window.scrollTo(0,0)
       }
     },
     created() {
@@ -74,12 +65,6 @@
 </script>
 
 <style lang="scss">
-  .end-tip {
-    text-align: center;
-    font-size: 30px;
-    color: #999;
-  }
-
   .waterfall-wrap {
     margin: 10px auto;
 
