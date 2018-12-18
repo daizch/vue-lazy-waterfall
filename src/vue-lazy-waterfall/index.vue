@@ -5,7 +5,8 @@
         :style="{'padding-top': `${maxHeight}px`}"
         ref="listRef">
       <li class="vue-lazy-waterfall-item"
-          v-for="(item, index) in items"
+          v-for="(item, index) in showItems"
+          :key="index"
           :style="item._style"
           :ref="`$el_${index}`"
           @click="clickItemHandler(item, index, $event)">
@@ -13,8 +14,9 @@
       </li>
       <li class="loading-placeholder" ref="loadRef"></li>
     </ul>
-
-    <slot name="endToBottom" v-show="isFinished"></slot>
+    <div class="vue-lazy-waterfall-end" v-show="isFinished">
+      <slot name="endToBottom">{{isFinished}}</slot>
+    </div>
   </div>
 </template>
 
@@ -30,7 +32,8 @@
       return {
         maxHeight: 0,
         isFinished: false,
-        beginIndex: 0
+        beginIndex: 0,
+        showItems: []
       }
     },
 
@@ -62,8 +65,10 @@
 
       diff: {
         type: Object,
-        default: {
-          bottom: (window.innerHeight || document.documentElement.clientHeight)
+        default() {
+          return {
+            bottom: (window.innerHeight || document.documentElement.clientHeight)
+          }
         }
       }
     },
@@ -87,6 +92,9 @@
 
     methods: {
       render() {
+        if (this.isFinished) {
+          return
+        }
         this.calcItemsStyle()
       },
       scrollHandler() {
@@ -96,12 +104,12 @@
       },
       createLazyloadCallback() {
         if (this.createLazyLoader) {
-          this.lazyScrollHandler = this.createLazyLoader(this.$refs.loadRef)
+          this.createLazyLoader(this.$refs.loadRef)
         } else {
+          //self lazy loader
           this.lazyScrollHandler = throttle(this.scrollHandler, 50)
+          window.addEventListener('scroll', this.lazyScrollHandler.bind(this))
         }
-
-        window.addEventListener('scroll', this.lazyScrollHandler.bind(this))
       },
       preloadedHandler(items) {
         const colNum = this.colNum
@@ -113,12 +121,14 @@
           }
         }
 
-        this.scrollHandler()
+        if (!this.isFinished && this.lazyScrollHandler) {
+          this.lazyScrollHandler()
+        }
       },
       unbindEvents() {
+        //self lazy loader
         if (this.lazyScrollHandler) {
           window.removeEventListener('scroll', this.lazyScrollHandler)
-          this.lazyScrollHandler = null
         }
       },
       end() {
@@ -144,6 +154,8 @@
               self.$nextTick(() => {
                 self.$emit('preloaded', lazyList)
               })
+
+              self.$emit('done', lazyList)
             }
           }
         }
@@ -164,6 +176,7 @@
 
           self.calcItemStyle(item, index)
           lazyList.push(item)
+          this.showItems.push(item)
         }
 
         self.beginIndex = self.items.length
