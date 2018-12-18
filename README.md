@@ -7,7 +7,8 @@
 
 ## Features
 - No extra dependencies except Vue
-
+- Lazy load
+- Automation layout
 
 ## Installation
 [![vue-lazy-waterfall](https://nodei.co/npm/vue-lazy-waterfall.png)](https://npmjs.org/package/vue-lazy-waterfall)
@@ -17,6 +18,9 @@ npm install vue-lazy-waterfall --save
 ```
 
 ## Usage
+
+
+[demo](https://daizch.github.io/vue-lazy-waterfall/dist/demo/index.html#/)
 
 ```javascript
 import LazyWaterfall from 'vue-lazy-waterfall';
@@ -79,7 +83,7 @@ use in html temlate:
 ### events
 | name |  default | description |
 | --- | --- | --- |
-| load| - | triggered by when to load the items data
+| load| - | triggered to load the items data
 | click | - | triggered by when the item was clicked 
 | image-load | - | triggered by when the image was loaded successfully
 | image-error | - | triggered by when the image was loaded error
