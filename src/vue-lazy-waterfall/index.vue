@@ -41,7 +41,10 @@
     },
 
     props: {
-      items: Array,
+      items: {
+        type: Array,
+        required: true
+      },
 
       colNum: {
         type: Number,
@@ -78,12 +81,12 @@
 
     watch: {
       items() {
-        this.render()
+        this.renderView()
       }
     },
 
     mounted() {
-      this.render()
+      this.renderView()
       this.$on('preloaded', this.preloadedHandler)
 
       this.createLazyloadCallback()
@@ -94,7 +97,7 @@
     },
 
     methods: {
-      render() {
+      renderView() {
         if (this.isFinished) {
           return
         }

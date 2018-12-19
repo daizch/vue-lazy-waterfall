@@ -1,5 +1,5 @@
 var path = require('path')
-const {VueLoaderPlugin} = require('vue-loader')
+const VueLoaderPlugin = require('vue-loader/lib/plugin')
 
 module.exports = {
   mode: 'production',
@@ -10,6 +10,7 @@ module.exports = {
     libraryTarget: 'umd',
     library: 'vueLazyWaterfall',
     libraryExport: "default",
+    umdNamedDefine: true
   },
   optimization: {
     splitChunks: {
@@ -21,15 +22,23 @@ module.exports = {
     rules: [
       {
         test: /\.vue$/,
-        loader: ['vue-loader', 'vue-style-loader'],
+        loader: 'vue-loader',
+        options: {
+          preserveWhitespace: false
+        }
+      },
+      {
+        test: /\.js/,
+        loader: 'babel-loader',
+        exclude: /node_modules/
       },
       {
         test: /\.less$/,
         use: [
           'vue-style-loader',
-          'postcss-loader',
           'css-loader',
-          'less-loader'
+          'less-loader',
+          // 'postcss-loader',
         ]
       },
       {
