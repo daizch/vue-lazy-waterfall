@@ -64,7 +64,7 @@
   }
 </script>
 
-<style lang="scss">
+<style lang="less">
   .waterfall-wrap {
     margin: 10px auto;
 

@@ -154,10 +154,10 @@
 
             len -= 1
             if (0 === len) {
+              self.showItems = self.showItems.concat(lazyList)
               self.$nextTick(() => {
                 self.$emit('preloaded', lazyList)
               })
-
               self.$emit('done', lazyList)
             }
           }
@@ -179,7 +179,6 @@
 
           self.calcItemStyle(item, index)
           lazyList.push(item)
-          this.showItems.push(item)
         }
 
         self.beginIndex = self.items.length
@@ -217,7 +216,7 @@
 </script>
 
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
   .vue-lazy-waterfall-wrap {
     .vue-lazy-waterfall-list {
       position: relative;

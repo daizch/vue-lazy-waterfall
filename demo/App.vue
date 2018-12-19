@@ -26,7 +26,7 @@
   }
 </script>
 
-<style lang="scss">
+<style lang="less">
   @import "static/css/reset.css";
 
   .back-top {

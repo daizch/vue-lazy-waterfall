@@ -1,7 +1,8 @@
 var path = require('path')
-var webpack = require('webpack')
+const {VueLoaderPlugin} = require('vue-loader')
 
 module.exports = {
+  mode: 'production',
   entry: './src/vue-lazy-waterfall/index.vue',
   output: {
     path: path.resolve('dist/vue-lazy-waterfall'),
@@ -10,15 +11,37 @@ module.exports = {
     library: 'vueLazyWaterfall',
     libraryExport: "default",
   },
+  optimization: {
+    splitChunks: {
+      // include all types of chunks
+      chunks: 'all'
+    }
+  },
   module: {
     rules: [
       {
         test: /\.vue$/,
-        loader: 'vue-loader',
+        loader: ['vue-loader', 'vue-style-loader'],
       },
+      {
+        test: /\.less$/,
+        use: [
+          'vue-style-loader',
+          'postcss-loader',
+          'css-loader',
+          'less-loader'
+        ]
+      },
+      {
+        test: /\.css$/,
+        use: [
+          'vue-style-loader',
+          'css-loader'
+        ]
+      }
     ]
   },
   plugins: [
-    new webpack.optimize.UglifyJsPlugin()
+    new VueLoaderPlugin(),// copy custom static assets
   ]
 };
