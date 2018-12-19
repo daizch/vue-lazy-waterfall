@@ -1,6 +1,12 @@
 .DS_Store
 node_modules/
-dist/
 npm-debug.log
 static/
 docs/
+src/
+demo/
+build/
+config/
+webpack.config.js
+index.html
+VUE-CLI-README.md
