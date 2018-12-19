@@ -18,7 +18,7 @@
     </ul>
 
     <div class="vue-lazy-waterfall-end" v-show="isFinished">
-      <slot name="endToBottom">{{isFinished}}</slot>
+      <slot name="endToBottom"></slot>
     </div>
   </div>
 </template>
@@ -36,7 +36,9 @@
         maxHeight: 0,
         isFinished: false,
         beginIndex: 0,
-        showItems: []
+        showItems: [],
+        loadings: 0,
+        isEnd: false
       }
     },
 
@@ -98,13 +100,13 @@
 
     methods: {
       renderView() {
-        if (this.isFinished) {
+        if (this.isEnd) {
           return
         }
         this.calcItemsStyle()
       },
       scrollHandler() {
-        if (!this.isFinished && isInViewport(this.$refs.loadRef, this.diff)) {
+        if (!this.isEnd && isInViewport(this.$refs.loadRef, this.diff)) {
           this.$emit('load')
         }
       },
@@ -127,7 +129,7 @@
           }
         }
 
-        if (!this.isFinished && this.lazyScrollHandler) {
+        if (!this.isEnd && this.lazyScrollHandler) {
           this.lazyScrollHandler()
         }
       },
@@ -138,7 +140,14 @@
         }
       },
       end() {
-        this.isFinished = true
+        if (this.loadings) {
+          this.$once('finished', () => {
+            this.isFinished = true
+          })
+        } else {
+          this.isFinished = true
+        }
+        this.isEnd = true
         this.unbindEvents()
       },
       calcItemsStyle() {
@@ -147,6 +156,10 @@
         var items = self.items
         var len = items.length - beginIndex
         var lazyList = []
+
+        if (!items.length) return
+
+        this.loadings++
 
         const done = (item) => {
           return (ev) => {
@@ -158,9 +171,15 @@
             len -= 1
             if (0 === len) {
               self.showItems = self.showItems.concat(lazyList)
+              self.loadings--
               self.$nextTick(() => {
                 self.$emit('preloaded', lazyList)
               })
+
+              if (self.loadings === 0) {
+                self.$emit('finished') //all loadings are finished
+              }
+
               self.$emit('done', lazyList)
             }
           }

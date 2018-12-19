@@ -270,6 +270,7 @@ export default {
 | click | - | triggered by when the item was clicked 
 | image-load | - | triggered by when the image was loaded successfully
 | image-error | - | triggered by when the image was loaded error
+| finished| - | all images requested by the waterfall are loaded
 
 ### slots
 | name | default | slot-scope | description|

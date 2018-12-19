@@ -1,18 +1,18 @@
-.vue-lazy-waterfall-wrap .vue-lazy-waterfall-list[data-v-51e0417f] {
+.vue-lazy-waterfall-wrap .vue-lazy-waterfall-list[data-v-6aa57495] {
   position: relative;
 }
-.vue-lazy-waterfall-wrap .loading-placeholder[data-v-51e0417f] {
+.vue-lazy-waterfall-wrap .loading-placeholder[data-v-6aa57495] {
   min-height: 1px;
   width: 100%;
   background-color: transparent;
 }
-.vue-lazy-waterfall-wrap .vue-lazy-waterfall-item[data-v-51e0417f] {
+.vue-lazy-waterfall-wrap .vue-lazy-waterfall-item[data-v-6aa57495] {
   position: absolute;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
   overflow: hidden;
 }
-.vue-lazy-waterfall-wrap .vue-lazy-waterfall-item img[data-v-51e0417f] {
+.vue-lazy-waterfall-wrap .vue-lazy-waterfall-item img[data-v-6aa57495] {
   width: 100%;
 }
 
@@ -115,5 +115,17 @@ li {
 .wrap {
   margin: auto;
   width: 1190px;
+}
+
+.freelog-alpha-images-list {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+.freelog-alpha-images-list .pin-image-item {
+  padding: 5px;
 }
 

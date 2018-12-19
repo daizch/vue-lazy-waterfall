@@ -1,6 +1,6 @@
 {
   "name": "vue-lazy-waterfall",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "A waterfall layout component for Vue.js",
   "author": "daizecheng <daizech@gmail.com>",
   "main": "./dist/vue-lazy-waterfall/index.js",
