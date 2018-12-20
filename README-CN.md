@@ -14,7 +14,9 @@
 - 自动排版布局
 
 ## 范例
-[demo](https://daizch.github.io/vue-lazy-waterfall/dist/demo/index.html#/)
+- [demo](https://daizch.github.io/vue-lazy-waterfall/dist/demo/index.html#/)
+- [custom lazy load demo](https://daizch.github.io/vue-lazy-waterfall/dist/demo/index.html#/lazy)
+- [resize demo](https://daizch.github.io/vue-lazy-waterfall/dist/demo/index.html#/demo)
 
 ## 安装
 [![vue-lazy-waterfall](https://nodei.co/npm/vue-lazy-waterfall.png)](https://npmjs.org/package/vue-lazy-waterfall)
@@ -111,6 +113,10 @@ new Vue({
 | endToBottom| - | - | 瀑布流滚动到底部时展示
 | - | - | item | 每一项展示的内容
 
+
+## todo
+- 纵向渲染，无需用absolute和计算left&top
+- 横向渲染时，可一行行渲染下来，无需等待每一页数据（图片）加载完成
 
 ## License
 

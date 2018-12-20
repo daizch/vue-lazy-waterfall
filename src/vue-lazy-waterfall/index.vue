@@ -155,7 +155,7 @@
         var top = 0
 
         item._style = {
-          width:`${this.itemWidth}px`,
+          width: `${this.itemWidth}px`,
           left: `${left}px`,
           top: `${top}px`
         }
@@ -179,6 +179,7 @@
             }
 
             len -= 1
+            //todo: render each row, no need to wait for everything is ready
             if (0 === len) {
               self.showItems = self.showItems.concat(lazyList)
               self.loadings--
