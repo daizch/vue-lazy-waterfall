@@ -30,7 +30,7 @@
     data() {
       return {
         items: [],
-        group: 0, // 当前加载的加载图片的次数
+        group: 0,
         width: 990
       }
     },

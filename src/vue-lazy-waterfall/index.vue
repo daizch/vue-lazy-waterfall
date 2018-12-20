@@ -84,6 +84,9 @@
     watch: {
       items() {
         this.renderView()
+      },
+      colNum() {
+        this.reflow(this.showItems)
       }
     },
 
@@ -110,6 +113,20 @@
           this.$emit('load')
         }
       },
+      reflow(items) {
+        items.forEach(item => {
+          this.refreshItemStyle(item)
+        })
+
+        var maxHeight = 0
+        items.forEach((item) => {
+          var index = item._index
+          var $el = this.$refs[`$el_${index}`][0]
+          $el.style.cssText += `left:${item._style.left};top:${item._style.top};`
+          maxHeight = Math.max(maxHeight, parseInt(item._style.top) + $el.offsetHeight)
+        })
+        this.maxHeight = maxHeight
+      },
       createLazyloadCallback() {
         if (this.createLazyLoader) {
           this.createLazyLoader(this.$refs.loadRef)
@@ -120,14 +137,7 @@
         }
       },
       preloadedHandler(items) {
-        const colNum = this.colNum
-
-        for (let index = 0; index < items.length; ++index) {
-          let item = items[index]
-          if (item._index >= colNum) {
-            this.updateItemStyle(item)
-          }
-        }
+        this.reflow(items)
 
         if (!this.isEnd && this.lazyScrollHandler) {
           this.lazyScrollHandler()
@@ -139,16 +149,16 @@
           window.removeEventListener('scroll', this.lazyScrollHandler)
         }
       },
-      end() {
-        if (this.loadings) {
-          this.$once('finished', () => {
-            this.isFinished = true
-          })
-        } else {
-          this.isFinished = true
+      initItemStyle(item, index) {
+        const colNum = this.colNum
+        var left = index % colNum * this.itemWidth
+        var top = 0
+
+        item._style = {
+          width:`${this.itemWidth}px`,
+          left: `${left}px`,
+          top: `${top}px`
         }
-        this.isEnd = true
-        this.unbindEvents()
       },
       calcItemsStyle() {
         const self = this
@@ -199,36 +209,36 @@
             done(item)
           }
 
-          self.calcItemStyle(item, index)
+          self.initItemStyle(item, index)
           lazyList.push(item)
         }
 
         self.beginIndex = self.items.length
       },
-      updateItemStyle(item, index) {
-        index = (index === undefined) ? item._index : index
-
+      refreshItemStyle(item) {
         const colNum = this.colNum
+        const index = item._index
+        var left = index % colNum * this.itemWidth
         var prev = index - colNum
+        item._style.left = `${left}px`
+        item._style.top = 0
         if (prev >= 0) {
-          var $prevItem = this.$refs[`$el_${prev}`][0]
-          var $cur = this.$refs[`$el_${index}`][0]
-          var top = parseInt($prevItem.style.top) + $prevItem.offsetHeight
+          let $prevItem = this.$refs[`$el_${prev}`][0]
+          let prevItem = this.showItems[prev]
+          var top = parseInt(prevItem._style.top) + $prevItem.offsetHeight
           item._style.top = `${top}px`
-          $cur.style.top = `${top}px`
-          this.maxHeight = Math.max(this.maxHeight, top + $cur.offsetHeight)
         }
       },
-      calcItemStyle(item, index) {
-        const colNum = this.colNum
-        var left = index % colNum * this.itemWidth
-        var top = 0
-
-        item._style = {
-          width: this.itemWidth + 'px',
-          left: `${left}px`,
-          top: `${top}px`
+      end() {
+        if (this.loadings) {
+          this.$once('finished', () => {
+            this.isFinished = true
+          })
+        } else {
+          this.isFinished = true
         }
+        this.isEnd = true
+        this.unbindEvents()
       },
       clickItemHandler(value, index, $event) {
         this.$emit('click', {value, index, $event})

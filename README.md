@@ -25,6 +25,7 @@ npm install vue-lazy-waterfall --save
 ## Examples
 [demo](https://daizch.github.io/vue-lazy-waterfall/dist/demo/index.html#/)
 [custom lazy load demo](https://daizch.github.io/vue-lazy-waterfall/dist/demo/index.html#/lazy)
+[resize demo](https://daizch.github.io/vue-lazy-waterfall/dist/demo/index.html#/demo)
 
 ## Usage
 

@@ -1,18 +1,18 @@
-.vue-lazy-waterfall-wrap .vue-lazy-waterfall-list[data-v-6aa57495] {
+.vue-lazy-waterfall-wrap .vue-lazy-waterfall-list[data-v-66eace18] {
   position: relative;
 }
-.vue-lazy-waterfall-wrap .loading-placeholder[data-v-6aa57495] {
+.vue-lazy-waterfall-wrap .loading-placeholder[data-v-66eace18] {
   min-height: 1px;
   width: 100%;
   background-color: transparent;
 }
-.vue-lazy-waterfall-wrap .vue-lazy-waterfall-item[data-v-6aa57495] {
+.vue-lazy-waterfall-wrap .vue-lazy-waterfall-item[data-v-66eace18] {
   position: absolute;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
   overflow: hidden;
 }
-.vue-lazy-waterfall-wrap .vue-lazy-waterfall-item img[data-v-6aa57495] {
+.vue-lazy-waterfall-wrap .vue-lazy-waterfall-item img[data-v-66eace18] {
   width: 100%;
 }
 
@@ -126,6 +126,7 @@ li {
           justify-content: center;
 }
 .freelog-alpha-images-list .pin-image-item {
-  padding: 5px;
+  line-height: 0;
+  /*padding: 5px;*/
 }
 
