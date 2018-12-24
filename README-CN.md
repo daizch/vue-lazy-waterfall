@@ -97,6 +97,9 @@ new Vue({
 | itemWidth | Number | - | 由宽度和列数计算所得，一般不指定|
 | diff | Object | {top: 0, right: 0, bottom: window.innerHeight, left: 0} | 触发懒加载的偏移量|
 | createLazyLoader | Function | - | 替换自带的懒加载，实现自定义的懒加载 |
+| autoMode| Boolean| true| 当某一项数据的图片加载完成，不保证按照数据的顺序立即渲染，设置为false，会按照每一页的加载顺序渲染
+|imageFilter| Function| - | 添加对图片src属性的处理，比如根据浏览器修改图片后缀或者修改加载图片的尺寸
+| maxLoading| Boolean | 2 | 允许同时加载的最多请求数
 
 ### 事件
 | 名称 |  默认值 | 描述 |

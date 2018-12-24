@@ -38,7 +38,9 @@
         beginIndex: 0,
         showItems: [],
         loadings: 0,
-        isEnd: false
+        isLoading: false,
+        isEnd: false,
+        lazyRenderItems: []
       }
     },
 
@@ -78,7 +80,24 @@
             bottom: (window.innerHeight || document.documentElement.clientHeight)
           }
         }
-      }
+      },
+
+      /**
+       * render the item immediately when its image is loaded
+       * attention: it will not keep the render order of the items
+       */
+      autoMode: {
+        type: Boolean,
+        default: true
+      },
+
+      //the number of loading data at the same time
+      maxLoading: {
+        type: Number,
+        default: 2
+      },
+
+      imageFilter: Function
     },
 
     watch: {
@@ -92,8 +111,7 @@
 
     mounted() {
       this.renderView()
-      this.$on('preloaded', this.preloadedHandler)
-
+      this.bindEvents()
       this.createLazyloadCallback()
     },
 
@@ -102,6 +120,9 @@
     },
 
     methods: {
+      bindEvents() {
+        this.$on('preloaded', this.preloadedHandler)
+      },
       renderView() {
         if (this.isEnd) {
           return
@@ -109,19 +130,20 @@
         this.calcItemsStyle()
       },
       scrollHandler() {
-        if (!this.isEnd && isInViewport(this.$refs.loadRef, this.diff)) {
+        if (!this.isEnd && this.canLoadData() && isInViewport(this.$refs.loadRef, this.diff)) {
           this.$emit('load')
         }
       },
       reflow(items) {
         items.forEach(item => {
-          this.refreshItemStyle(item)
+          this.calcItemStyle(item)
         })
 
         var maxHeight = 0
         items.forEach((item) => {
           var index = item._index
-          var $el = this.$refs[`$el_${index}`][0]
+          var $els = this.$refs[`$el_${index}`]
+          var $el = $els[0]
           $el.style.cssText += `left:${item._style.left};top:${item._style.top};`
           maxHeight = Math.max(maxHeight, parseInt(item._style.top) + $el.offsetHeight)
         })
@@ -139,20 +161,36 @@
       preloadedHandler(items) {
         this.reflow(items)
 
-        if (!this.isEnd && this.lazyScrollHandler) {
+        //check weather it should to load next page immediately
+        if (this.lazyScrollHandler) {
           this.lazyScrollHandler()
         }
       },
       unbindEvents() {
-        //self lazy loader
+        //lazy loader
         if (this.lazyScrollHandler) {
           window.removeEventListener('scroll', this.lazyScrollHandler)
         }
+        this.$off('preloaded', this.preloadedHandler)
       },
-      initItemStyle(item, index) {
+      canLoadData() {
+        return this.loadings < this.maxLoading
+      },
+      calcItemStyle(item) {
         const colNum = this.colNum
+        var index = item._index
         var left = index % colNum * this.itemWidth
         var top = 0
+        var prev = index - colNum
+
+        if (prev >= 0) {
+          let $prevItem = this.$refs[`$el_${prev}`]
+          $prevItem = $prevItem && $prevItem[0]
+          if ($prevItem) {
+            let prevItem = this.showItems[prev]
+            top = parseInt(prevItem._style.top) + $prevItem.offsetHeight
+          }
+        }
 
         item._style = {
           width: `${this.itemWidth}px`,
@@ -160,75 +198,95 @@
           top: `${top}px`
         }
       },
+      lazyRenderItemsHandler() {
+        var curRenderItems = this.lazyRenderItems[0]
+        if (curRenderItems && curRenderItems.len === curRenderItems.count) {
+          this.showItems = this.showItems.concat(curRenderItems.items)
+          this.$nextTick(() => {
+            this.lazyRenderItems.shift()
+            this.lazyRenderItemsHandler()
+            this.$emit('preloaded', curRenderItems.items)
+          })
+        }
+      },
       calcItemsStyle() {
         const self = this
-        const beginIndex = self.beginIndex
-        var items = self.items
-        var len = items.length - beginIndex
-        var lazyList = []
+        const beginIndex = this.beginIndex
+        var items = this.items
+        const itemsLength = items.length
+        const autoMode = this.autoMode
+        var currentRenderItems = {
+          count: 0,
+          len: itemsLength - beginIndex,
+          items: items.slice(beginIndex, itemsLength)
+        }
 
-        if (!items.length) return
+        const hasImageFilter = (typeof this.imageFilter === 'function')
+
+        if (!currentRenderItems.len) return
+
+        if (!autoMode) {
+          this.lazyRenderItems.push(currentRenderItems)
+        }
 
         this.loadings++
-
         const done = (item) => {
           return (ev) => {
             if (ev) {
               item.$event = ev
+              item._isLoadImageError = ev.type === 'error'
               self.$emit(`image-${ev.type}`, item)
             }
 
-            len -= 1
-            //todo: render each row, no need to wait for everything is ready
-            if (0 === len) {
-              self.showItems = self.showItems.concat(lazyList)
-              self.loadings--
-              self.$nextTick(() => {
-                self.$emit('preloaded', lazyList)
-              })
+            currentRenderItems.count += 1
 
+            if (autoMode) {
+              item._index = self.showItems.length
+              self.calcItemStyle(item)
+              self.showItems.push(item)
+              self.$nextTick(() => {
+                self.resetMaxHeight(item)
+              })
+            } else {
+              self.calcItemStyle(item)
+            }
+
+            if (currentRenderItems.count === currentRenderItems.len) {
+              this.isLoading = false
+              if (!autoMode) {
+                self.lazyRenderItemsHandler()
+              }
+
+              self.loadings--
               if (self.loadings === 0) {
                 self.$emit('finished') //all loadings are finished
               }
-
-              self.$emit('done', lazyList)
+              self.$emit('done', currentRenderItems.items)
             }
           }
         }
 
-        for (let index = beginIndex; index < items.length; index++) {
-          let item = items[index]
+        currentRenderItems.items.forEach((item, index) => {
           let img = new Image()
 
-          item._index = index
-
+          item._index = index + beginIndex
           if (item.src) {
+            //preload image
             img.onload = done(item)
             img.onerror = done(item)
-            img.src = item.src
+            img.src = hasImageFilter ? this.imageFilter(item.src, item) : item.src
           } else {
             done(item)
           }
+        })
 
-          self.initItemStyle(item, index)
-          lazyList.push(item)
-        }
-
-        self.beginIndex = self.items.length
+        self.beginIndex = itemsLength
       },
-      refreshItemStyle(item) {
-        const colNum = this.colNum
-        const index = item._index
-        var left = index % colNum * this.itemWidth
-        var prev = index - colNum
-        item._style.left = `${left}px`
-        item._style.top = 0
-        if (prev >= 0) {
-          let $prevItem = this.$refs[`$el_${prev}`][0]
-          let prevItem = this.showItems[prev]
-          var top = parseInt(prevItem._style.top) + $prevItem.offsetHeight
-          item._style.top = `${top}px`
-        }
+      resetMaxHeight(item) {
+        var index = item._index
+        var $els = this.$refs[`$el_${index}`]
+        var $el = $els[0]
+        this.maxHeight = Math.max(this.maxHeight, parseInt(item._style.top) + $el.offsetHeight)
       },
       end() {
         if (this.loadings) {

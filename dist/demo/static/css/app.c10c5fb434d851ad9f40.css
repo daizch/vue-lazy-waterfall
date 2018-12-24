@@ -1,18 +1,18 @@
-.vue-lazy-waterfall-wrap .vue-lazy-waterfall-list[data-v-66eace18] {
+.vue-lazy-waterfall-wrap .vue-lazy-waterfall-list[data-v-aaba10dc] {
   position: relative;
 }
-.vue-lazy-waterfall-wrap .loading-placeholder[data-v-66eace18] {
+.vue-lazy-waterfall-wrap .loading-placeholder[data-v-aaba10dc] {
   min-height: 1px;
   width: 100%;
   background-color: transparent;
 }
-.vue-lazy-waterfall-wrap .vue-lazy-waterfall-item[data-v-66eace18] {
+.vue-lazy-waterfall-wrap .vue-lazy-waterfall-item[data-v-aaba10dc] {
   position: absolute;
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
   overflow: hidden;
 }
-.vue-lazy-waterfall-wrap .vue-lazy-waterfall-item img[data-v-66eace18] {
+.vue-lazy-waterfall-wrap .vue-lazy-waterfall-item img[data-v-aaba10dc] {
   width: 100%;
 }
 
@@ -29,6 +29,7 @@ a {
 li {
   list-style: none;
 }
+
 
 .back-top {
   position: fixed;

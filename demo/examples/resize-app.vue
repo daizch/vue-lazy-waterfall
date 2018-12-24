@@ -3,10 +3,11 @@
     <VueLazyWaterfall :items="items"
                       ref="waterfall"
                       :colNum="colNum"
+                      :autoMode="false"
                       :itemWidth="itemWidth"
                       @click="clickImgHandler"
                       :width="width" @load="getData">
-      <div slot-scope="{item}" class="pin-image-item"><img :src="item.src" alt=""></div>
+      <div slot-scope="{item}" class="pin-image-item" v-show="item._isLoadImageError === false"><img :src="item.src" alt=""></div>
       <div class="loading-spinner" slot="loading"></div>
       <div slot="endToBottom" class="end-tip">END</div>
     </VueLazyWaterfall>
@@ -64,11 +65,11 @@
       mockPageData() {
         var items = []
         for (var i = 0; i < 20; i++) {
-          // let width = parseInt(Math.random() * 100) + 300
-          // let height = parseInt(Math.random() * 100) + 300
+          let width = parseInt(Math.random() * 100) + 300
+          let height = parseInt(Math.random() * 100) + 300
           let index = Math.min(parseInt(Math.random() * 15) + 1, 15)
           items.push({
-            src: `./static/images/${index}.png`, //`https://picsum.photos/${width}/${height}/?random`,
+            src: `https://picsum.photos/${width}/${height}/?random`, //`./static/images/${index}.png`, //
             info: +new Date()
           })
         }

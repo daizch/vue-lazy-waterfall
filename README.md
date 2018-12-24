@@ -24,7 +24,7 @@ npm install vue-lazy-waterfall --save
 
 ## Examples
 - [demo](https://daizch.github.io/vue-lazy-waterfall/dist/demo/index.html#/)
-- [custom lazy load demo](https://daizch.github.io/vue-lazy-waterfall/dist/demo/index.html#/lazy)
+- [custom lazy loader demo](https://daizch.github.io/vue-lazy-waterfall/dist/demo/index.html#/lazy)
 - [resize demo](https://daizch.github.io/vue-lazy-waterfall/dist/demo/index.html#/demo)
 
 ## Usage
@@ -263,6 +263,9 @@ export default {
 | itemWidth | Number | - | calculate by the colNum and the width|
 | diff | Object | {top: 0, right: 0, bottom: window.innerHeight, left: 0} | offset config to determine when to fire load event|
 | createLazyLoader | Function | - | create your own lazy loader |
+| autoMode| Boolean| true| render the item one by one when the one's image is ready. If it is false, the waterfall view will render the items by loaded order
+|imageFilter| Function| - | handle the image's src property whatever you want before load the image
+| maxLoading| Boolean | 2 | the max number of loading data at the same time
 
 ### events
 | name |  default | description |
