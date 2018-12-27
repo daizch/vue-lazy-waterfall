@@ -57,7 +57,7 @@
           .then(items => {
             this.items = this.items.concat(items)
             this.group++
-            if (this.group === 20) {
+            if (this.group === 3) {
               this.$refs.waterfall.end()
             }
           })

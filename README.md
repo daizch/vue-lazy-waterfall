@@ -22,6 +22,12 @@
 npm install vue-lazy-waterfall --save
 ```
 
+And it's also available on [jsDelivr](https://www.jsdelivr.com/package/npm/vue-lazy-waterfall)
+
+```html
+<script src="//cdn.jsdelivr.net/npm/vue-lazy-waterfall"></script>
+```
+
 ## Examples
 - [demo](https://daizch.github.io/vue-lazy-waterfall/dist/demo/index.html#/)
 - [custom lazy loader demo](https://daizch.github.io/vue-lazy-waterfall/dist/demo/index.html#/lazy)

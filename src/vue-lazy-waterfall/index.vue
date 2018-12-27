@@ -38,7 +38,6 @@
         beginIndex: 0,
         showItems: [],
         loadings: 0,
-        isLoading: false,
         isEnd: false,
         lazyRenderItems: []
       }
@@ -105,6 +104,7 @@
         this.renderView()
       },
       colNum() {
+        this.maxHeight = 0
         this.reflow(this.showItems)
       }
     },
@@ -121,10 +121,10 @@
 
     methods: {
       bindEvents() {
-        this.$on('preloaded', this.preloadedHandler)
+
       },
       renderView() {
-        if (this.isEnd) {
+        if (this.isEnd && this.isFinished) {
           return
         }
         this.calcItemsStyle()
@@ -147,7 +147,7 @@
           $el.style.cssText += `left:${item._style.left};top:${item._style.top};`
           maxHeight = Math.max(maxHeight, parseInt(item._style.top) + $el.offsetHeight)
         })
-        this.maxHeight = maxHeight
+        this.maxHeight = Math.max(this.maxHeight, maxHeight)
       },
       createLazyloadCallback() {
         if (this.createLazyLoader) {
@@ -186,8 +186,8 @@
         if (prev >= 0) {
           let $prevItem = this.$refs[`$el_${prev}`]
           $prevItem = $prevItem && $prevItem[0]
-          if ($prevItem) {
-            let prevItem = this.showItems[prev]
+          let prevItem = this.showItems[prev]
+          if ($prevItem && prevItem) {
             top = parseInt(prevItem._style.top) + $prevItem.offsetHeight
           }
         }
@@ -202,10 +202,11 @@
         var curRenderItems = this.lazyRenderItems[0]
         if (curRenderItems && curRenderItems.len === curRenderItems.count) {
           this.showItems = this.showItems.concat(curRenderItems.items)
+          this.lazyRenderItems.shift()
           this.$nextTick(() => {
-            this.lazyRenderItems.shift()
-            this.lazyRenderItemsHandler()
+            this.preloadedHandler(curRenderItems.items)
             this.$emit('preloaded', curRenderItems.items)
+            this.lazyRenderItemsHandler()
           })
         }
       },
@@ -222,7 +223,6 @@
         }
 
         const hasImageFilter = (typeof this.imageFilter === 'function')
-
         if (!currentRenderItems.len) return
 
         if (!autoMode) {
@@ -252,7 +252,6 @@
             }
 
             if (currentRenderItems.count === currentRenderItems.len) {
-              this.isLoading = false
               if (!autoMode) {
                 self.lazyRenderItemsHandler()
               }
