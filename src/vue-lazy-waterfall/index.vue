@@ -258,6 +258,7 @@
 
               self.loadings--
               if (self.loadings === 0) {
+                self.isFinished = true
                 self.$emit('finished') //all loadings are finished
               }
               self.$emit('done', currentRenderItems.items)
